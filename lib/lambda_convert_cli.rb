@@ -1,0 +1,3 @@
+def main()
+  puts 'hello'
+end
