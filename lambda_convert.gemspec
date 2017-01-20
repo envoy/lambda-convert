@@ -5,7 +5,11 @@ Gem::Specification.new do |s|
   s.summary     = 'AWS Lambda powered drop-in replacement for ImageMagick convert command line tool'
   s.authors     = ['Fang-Pen Lin']
   s.email       = 'fang@envoy.com'
-  s.files       = ['lib/lambda_convert_cli.rb']
+  s.files       = (
+    Dir.glob('*/lib/**/*', File::FNM_DOTMATCH) +
+    Dir['bin/*'] +
+    %w(README.md LICENSE)
+  )
   s.bindir      = 'bin'
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.license     = 'MIT'
