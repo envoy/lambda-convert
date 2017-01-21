@@ -42,7 +42,8 @@ def main
       acl: 'public-read'
     },
     key: output_key,
-    args: ['{source}', '-resize', '100x100', '{dest}']
+    # TODO: deal with special input argumnet like file.gif[0]
+    args: ['{source}'] + ARGV[1..-2] + ['{dest}']
   }
   logger.info("Invoking lambda with instruction #{instruction}")
 
@@ -53,5 +54,15 @@ def main
   )
   logger.info("Get response of invoke #{resp}")
   raise 'Failed to run convert on Lambda' if resp.status_code != 200
+
+  logger.info(
+    "Downloading file from s3://#{s3_bucket}/#{output_key} to #{output_file}"
+  )
+  s3.get_object(
+    response_target: output_file,
+    bucket: s3_bucket,
+    key: output_key
+  )
+  logger.info('Done')
   # TODO: download output file from s3 and write it to output_file path
 end
