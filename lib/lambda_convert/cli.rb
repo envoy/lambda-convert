@@ -22,7 +22,7 @@ def lambda_convert
     ENV['CONVERT_SECRET_ACCESS_KEY'] || ENV['AWS_SECRET_ACCESS_KEY']
   )
   s3_bucket = ENV['CONVERT_S3_BUCKET']
-  lambda_function = ENV['CONVERT_LAMBDA_FUNCTION'] || 'image-convert-dev'
+  lambda_function = ENV['CONVERT_LAMBDA_FUNCTION'] || 'image-convert-prod'
 
   s3 = Aws::S3::Client.new(
     region: s3_region,
