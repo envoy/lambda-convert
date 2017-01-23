@@ -4,6 +4,14 @@ require 'English'
 
 require 'aws-sdk'
 
+# find command path array matching given `cmd` name in $PATH
+def find_cmd(cmd)
+  (ENV['PATH'].split(File::PATH_SEPARATOR).map do |path|
+    cmd_path = File.join(path, cmd)
+    cmd_path if File.executable?(cmd_path) && !File.directory?(cmd_path)
+  end).compact
+end
+
 def parse_input_path(path)
   # convert command input path could be attached with selecting syntax, let's
   # parse it and return them in an array of [filename, selecting syntax]
@@ -97,15 +105,19 @@ end
 
 def local_convert
   logger = Logger.new(STDERR)
+
   env = ENV.to_h
-  # remove Gem bindir from the path, so that we won't invoke ourself
-  path = ENV['PATH'].split(File::PATH_SEPARATOR) - [Gem.bindir]
-  env['PATH'] = path.join(File::PATH_SEPARATOR)
+  # find the original convert bin path
+  original_convert = find_cmd('convert').find do |path|
+    # TODO: maybe we need a more robust way to determine whether is given
+    # convert path from us or someone else
+    File.dirname(path) != Gem.bindir && !path.include?('.rbenv/shims')
+  end
   # we also put a CONVERT_RECURSIVE_FLAG to avoid somehow calling ourself again
   # by mistake
   env['CONVERT_RECURSIVE_FLAG'] = '1'
-  logger.info("Running local convert with args #{ARGV}")
-  system(env, *(['convert'] + ARGV))
+  logger.info("Running local convert #{original_convert} with args #{ARGV}")
+  system(env, *([original_convert] + ARGV))
   abort('Failed to run local convert') unless $CHILD_STATUS.success?
   logger.info('Done')
 end
