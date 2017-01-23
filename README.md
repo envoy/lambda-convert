@@ -9,7 +9,7 @@ At Envoy, we have many image file uploaded by users and will be resized via `con
 
 When user upload a GIF image, to resize it, ImageMagick will need to load the all frames into memory. In that case, even the GIF image file is very small, could posiblly consume huge amount of memory. This brings big impact to our API server, and sometimes the uploading request fails due to this reason.
 
-### Security concern
+### Security concerns
 
 Despite it's not really easy to perform, it still possible to leverage exploits of certain image file format loading code in ImageMagick.
 
