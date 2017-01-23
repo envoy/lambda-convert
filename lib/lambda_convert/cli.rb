@@ -4,10 +4,19 @@ require 'English'
 
 require 'aws-sdk'
 
+def parse_input_path(path)
+  # convert command input path could be attached with selecting syntax, let's
+  # parse it and return them in an array of [filename, selecting syntax]
+  # ref: https://www.imagemagick.org/script/command-line-processing.php
+  match = /([^\[\]]+)(\[(.+)\])?/.match(path)
+  [match[1], match[3]]
+end
+
 def lambda_convert
   logger = Logger.new(STDERR)
 
-  aws_region = ENV['CONVERT_REGION'] || ENV['AWS_REGION']
+  s3_region = ENV['CONVERT_S3_REGION'] || ENV['AWS_REGION']
+  lambda_region = ENV['CONVERT_LAMBDA_REGION'] || ENV['AWS_REGION']
   aws_credentials = Aws::Credentials.new(
     ENV['CONVERT_ACCESS_KEY'] || ENV['AWS_ACCESS_KEY_ID'],
     ENV['CONVERT_SECRET_ACCESS_KEY'] || ENV['AWS_SECRET_ACCESS_KEY']
@@ -16,17 +25,17 @@ def lambda_convert
   lambda_function = ENV['CONVERT_LAMBDA_FUNCTION'] || 'image-convert-dev'
 
   s3 = Aws::S3::Client.new(
-    region: aws_region,
+    region: s3_region,
     credentials: aws_credentials
   )
   aws_lambda = Aws::Lambda::Client.new(
-    region: aws_region,
+    region: lambda_region,
     credentials: aws_credentials
   )
 
-  # TODO: handle special input argument like file.gif[0], file.gif[1],
-  # not sure what the format will be
-  input_file = ARGV[0]
+  input_file, input_selecting = parse_input_path(ARGV[0])
+  # Notice: there is also special output file syntax for convert command, but
+  # we are not supporting them now, as we probably won't use it
   output_file = ARGV[-1]
 
   input_key = "_convert_tmp/#{SecureRandom.uuid}"
@@ -36,6 +45,8 @@ def lambda_convert
   File.open(input_file, 'rb') do |file|
     s3.put_object(bucket: s3_bucket, key: input_key, body: file)
   end
+  source = '{source}'
+  source += "[#{input_selecting}]" unless input_selecting.nil?
   instruction = {
     schema: 'envoy-convert-instruction',
     original: input_key,
@@ -44,8 +55,7 @@ def lambda_convert
       acl: 'private'
     },
     key: output_key,
-    # TODO: deal with special input argumnet like file.gif[0]
-    args: ['{source}'] + ARGV[1..-2] + ['{dest}']
+    args: [source] + ARGV[1..-2] + ['{dest}']
   }
   logger.info("Invoking lambda with instruction #{instruction}")
 
