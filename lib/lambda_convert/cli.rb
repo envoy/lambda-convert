@@ -29,8 +29,8 @@ def lambda_convert
   input_file = ARGV[0]
   output_file = ARGV[-1]
 
-  input_key = SecureRandom.uuid
-  output_key = SecureRandom.uuid
+  input_key = "_convert_tmp/#{SecureRandom.uuid}"
+  output_key = "_convert_tmp/#{SecureRandom.uuid}"
 
   logger.info("Uploading file to s3://#{s3_bucket}/#{input_key}")
   File.open(input_file, 'rb') do |file|
@@ -41,8 +41,7 @@ def lambda_convert
     original: input_key,
     bucket: s3_bucket,
     write_options: {
-      # XXX:
-      acl: 'public-read'
+      acl: 'private'
     },
     key: output_key,
     # TODO: deal with special input argumnet like file.gif[0]
@@ -67,6 +66,22 @@ def lambda_convert
     key: output_key
   )
   logger.info('Done')
+ensure
+  logger.info("Delete files #{input_key} and #{output_key} from #{s3_bucket}")
+  s3.delete_objects(
+    bucket: s3_bucket,
+    delete: {
+      objects: [
+        {
+          key: input_key
+        },
+        {
+          key: output_key
+        }
+      ],
+      quiet: true
+    }
+  )
 end
 
 def local_convert
