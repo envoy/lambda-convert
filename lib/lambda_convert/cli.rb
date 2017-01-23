@@ -1,8 +1,10 @@
 require 'logger'
+require 'rubygems'
+require 'English'
 
 require 'aws-sdk'
 
-def main
+def lambda_convert
   logger = Logger.new(STDERR)
 
   aws_region = ENV['CONVERT_REGION'] || ENV['AWS_REGION']
@@ -37,8 +39,9 @@ def main
   instruction = {
     schema: 'envoy-convert-instruction',
     original: input_key,
-    bucket: 'envoy-development',
+    bucket: s3_bucket,
     write_options: {
+      # XXX:
       acl: 'public-read'
     },
     key: output_key,
@@ -64,5 +67,32 @@ def main
     key: output_key
   )
   logger.info('Done')
-  # TODO: download output file from s3 and write it to output_file path
+end
+
+def local_convert
+  logger = Logger.new(STDERR)
+  env = ENV.to_h
+  # remove Gem bindir from the path, so that we won't invoke ourself
+  path = ENV['PATH'].split(File::PATH_SEPARATOR) - [Gem.bindir]
+  env['PATH'] = path.join(File::PATH_SEPARATOR)
+  # we also put a CONVERT_RECURSIVE_FLAG to avoid somehow calling ourself again
+  # by mistake
+  env['CONVERT_RECURSIVE_FLAG'] = '1'
+  logger.info("Running local convert with args #{ARGV}")
+  system(env, *(['convert'] + ARGV))
+  abort('Failed to run local convert') unless $CHILD_STATUS.success?
+end
+
+def main
+  abort('Recursive call') if ENV['CONVERT_RECURSIVE_FLAG'] == '1'
+  lambda_convert
+rescue StandardError => e
+  logger = Logger.new(STDERR)
+  logger.warn("Failed to convert via lambda, error=#{e}")
+  fallback_disabled = (ENV['CONVERT_DISABLE_FALLBACK'].to_i != 0) || false
+  if fallback_disabled
+    abort("Failed to convert via lambda, no fallback, error=#{e}")
+  end
+  logger.info('Fallback to local convert command')
+  local_convert
 end
