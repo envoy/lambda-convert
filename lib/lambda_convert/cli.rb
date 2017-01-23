@@ -22,6 +22,7 @@ def lambda_convert
     ENV['CONVERT_SECRET_ACCESS_KEY'] || ENV['AWS_SECRET_ACCESS_KEY']
   )
   s3_bucket = ENV['CONVERT_S3_BUCKET']
+  s3_key_prefix = ENV['CONVERT_S3_KEY_PREFIX'] || '_convert_tmp/'
   lambda_function = ENV['CONVERT_LAMBDA_FUNCTION'] || 'image-convert-prod'
 
   s3 = Aws::S3::Client.new(
@@ -38,8 +39,8 @@ def lambda_convert
   # we are not supporting them now, as we probably won't use it
   output_file = ARGV[-1]
 
-  input_key = "_convert_tmp/#{SecureRandom.uuid}"
-  output_key = "_convert_tmp/#{SecureRandom.uuid}"
+  input_key = "#{s3_key_prefix}#{SecureRandom.uuid}"
+  output_key = "#{s3_key_prefix}#{SecureRandom.uuid}"
 
   logger.info("Uploading file to s3://#{s3_bucket}/#{input_key}")
   File.open(input_file, 'rb') do |file|
