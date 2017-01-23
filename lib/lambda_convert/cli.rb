@@ -81,6 +81,7 @@ def local_convert
   logger.info("Running local convert with args #{ARGV}")
   system(env, *(['convert'] + ARGV))
   abort('Failed to run local convert') unless $CHILD_STATUS.success?
+  logger.info('Done')
 end
 
 def main
