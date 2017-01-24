@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.push File.expand_path('../../lib', __FILE__)
 
-require 'lambda_convert/cli'
+require 'logger'
+require 'lambda_convert'
 
-main
+# TODO: also make it possible to configure logger, like write to file for
+# debugging?
+LambdaConvert::CLI.logger = Logger.new(STDERR)
+LambdaConvert::CLI.main
