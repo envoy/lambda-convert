@@ -27,3 +27,7 @@ To eliminate the big image file uploading issue and the security risk, the idea 
  - **CONVERT_S3_KEY_PREFIX** - AWS S3 temporary file uploading prefix, default value is `_convert_tmp/`
  - **CONVERT_LAMBDA_FUNCTION** - Name of the AWS Lambda function to invoke, default value is `image-convert-prod`
  - **CONVERT_DISABLE_FALLBACK** - By default, this command line tool fallbacks to local `convert` command if remote operation fails. Set this value to 1 to disable the fallback behavior.
+
+## The AWS Lambda function
+
+The AWS Lambda function for running ImageMagick can be found here at https://github.com/envoy/envoy-convert
