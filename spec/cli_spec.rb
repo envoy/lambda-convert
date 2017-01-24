@@ -3,6 +3,25 @@ require 'open3'
 require 'english'
 require 'tempfile'
 
+RSpec::Matchers.define :eq_image_size do |expected|
+  match do |actual|
+    (output, status) = Open3.capture2('identify', '-format', '%G', actual)
+    status.success? && output == expected
+  end
+
+  failure_message do |actual|
+    (output, error, status) = Open3.capture3(
+      'identify', '-format', '%G', actual
+    )
+    unless status.success?
+      return "expected that #{actual} image size should be #{expected}, " \
+        "got error #{error} for identify image instead"
+    end
+    "expected that #{actual} image size should be #{expected}, got #{output} " \
+    'instead'
+  end
+end
+
 RSpec.describe LambdaConvert::CLI do
   let(:bin_path) { File.expand_path('../bin/convert', File.dirname(__FILE__)) }
   let(:fixture_folder) do
@@ -27,16 +46,22 @@ RSpec.describe LambdaConvert::CLI do
   end
 
   context 'simple lambda resize' do
-    let(:tempfile) { Tempfile.new(['output', '.jpg']) }
+    let(:tempfile) { Tempfile.new('output') }
     subject do
       Open3.capture2(
-        { 'CONVERT_DISABLE_FALLBACK' => '1' },
-        bin_path, envoy_logo, '-resize', '100x100', tempfile.path
+        {
+          'CONVERT_DISABLE_FALLBACK' => '1',
+          'CONVERT_LAMBDA_REGION' => 'us-west-2',
+          'CONVERT_LAMBDA_FUNCTION' => 'image-convert-dev',
+          'CONVERT_S3_REGION' => 'us-west-2',
+          'CONVERT_S3_BUCKET' => 'envoy-development'
+        },
+        bin_path, envoy_logo, '-resize', '100x100!', tempfile.path
       )
     end
     it 'resizes the image' do
-      # TODO: check the image size
       expect(subject[1].success?).to eq(true)
+      expect(tempfile.path).to eq_image_size('100x100')
     end
   end
 end
