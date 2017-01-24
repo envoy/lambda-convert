@@ -1,7 +1,7 @@
 require 'spec_helper.rb'
 require 'open3'
-require 'english'
 require 'tempfile'
+require 'English'
 
 RSpec::Matchers.define :eq_image_size do |expected|
   match do |actual|
