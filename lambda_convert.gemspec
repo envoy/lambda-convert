@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'lambda_convert'
-  s.version     = '0.0.5'
+  s.version     = '0.0.6'
   s.date        = '2017-01-23'
   s.summary     = 'AWS Lambda powered drop-in replacement for ImageMagick convert command line tool'
   s.authors     = ['Fang-Pen Lin']
