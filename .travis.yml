@@ -8,4 +8,4 @@ env:
     - CONVERT_S3_REGION=us-west-2
     - CONVERT_S3_BUCKET=envoy-development
 before_install: bundle install
-script: rspec
+script: bundle exec rspec
