@@ -4,7 +4,11 @@ $LOAD_PATH.push File.expand_path('../../lib', __FILE__)
 require 'logger'
 require 'lambda_convert'
 
-# TODO: also make it possible to configure logger, like write to file for
-# debugging?
-LambdaConvert::CLI.logger = Logger.new(STDERR)
+debug_log = ENV['CONVERT_DEBUG_LOG']
+if debug_log.nil?
+  LambdaConvert::CLI.logger = Logger.new(STDERR)
+else
+  file = File.open(debug_log, File::WRONLY | File::APPEND | File::CREAT)
+  LambdaConvert::CLI.logger = Logger.new(file)
+end
 LambdaConvert::CLI.main
