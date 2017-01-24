@@ -6,7 +6,7 @@ require 'English'
 RSpec::Matchers.define :eq_image_size do |expected|
   match do |actual|
     (output, status) = Open3.capture2('identify', '-format', '%G', actual)
-    status.success? && output == expected
+    status.success? && output.strip == expected
   end
 
   failure_message do |actual|
@@ -15,10 +15,10 @@ RSpec::Matchers.define :eq_image_size do |expected|
     )
     unless status.success?
       return "expected that #{actual} image size should be #{expected}, " \
-        "got error #{error} for identify image instead"
+        "got error #{error} for identifying image instead"
     end
-    "expected that #{actual} image size should be #{expected}, got #{output} " \
-    'instead'
+    "expected that #{actual} image size should be #{expected}, got " \
+    "#{output.strip} instead"
   end
 end
 
