@@ -1,4 +1,6 @@
 language: ruby
+rvm:
+  - 2.4.0
 env:
   global:
     - CONVERT_LAMBDA_REGION=us-west-2
