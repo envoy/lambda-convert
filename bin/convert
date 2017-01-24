@@ -4,6 +4,14 @@ $LOAD_PATH.push File.expand_path('../../lib', __FILE__)
 require 'logger'
 require 'lambda_convert'
 
+# we want to print 'yes' if CONVERT_CHECK_SCRIPT is set to 1, in this way
+# LambdaConvert::Utils.original_convert can determine whether is given
+# executable file ours
+if ENV['CONVERT_CHECK_SCRIPT'] == '1'
+  puts('yes')
+  exit
+end
+
 debug_log = ENV['CONVERT_DEBUG_LOG']
 if debug_log.nil?
   LambdaConvert::CLI.logger = Logger.new(STDERR)

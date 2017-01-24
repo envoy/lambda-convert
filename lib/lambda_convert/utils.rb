@@ -1,3 +1,5 @@
+require 'open3'
+
 module LambdaConvert
   # Utils functions
   module Utils
@@ -11,9 +13,8 @@ module LambdaConvert
 
     def self.original_convert
       find_cmd('convert').find do |path|
-        # TODO: maybe we need a more robust way to determine whether is given
-        # convert path from us or someone else
-        File.dirname(path) != Gem.bindir && !path.include?('.rbenv/shims')
+        output, = Open3.capture3({ 'CONVERT_CHECK_SCRIPT' => '1' }, path)
+        output.strip != 'yes'
       end
     end
 

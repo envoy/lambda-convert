@@ -31,6 +31,8 @@ module LambdaConvert
         credentials: aws_credentials
       )
 
+      abort('Invalid arguments') if ARGV.count < 2
+
       input_file, input_selecting = LambdaConvert::Utils.parse_input_path(
         ARGV[0]
       )
@@ -103,6 +105,7 @@ module LambdaConvert
       env = ENV.to_h
       # find the original convert bin path
       original_convert = LambdaConvert::Utils.original_convert
+      abort('No local convert found') if original_convert.nil?
       # we also put a CONVERT_RECURSIVE_FLAG to avoid somehow calling ourself
       # again by mistake
       env['CONVERT_RECURSIVE_FLAG'] = '1'
