@@ -78,23 +78,25 @@ module LambdaConvert
       )
       logger.info('Done')
     ensure
-      logger.info(
-        "Delete files #{input_key} and #{output_key} from #{s3_bucket}"
-      )
-      s3.delete_objects(
-        bucket: s3_bucket,
-        delete: {
-          objects: [
-            {
-              key: input_key
-            },
-            {
-              key: output_key
-            }
-          ],
-          quiet: true
-        }
-      )
+      if !s3.nil? && !input_key.nil? && !output_key.nil?
+        logger.info(
+          "Delete files #{input_key} and #{output_key} from #{s3_bucket}"
+        )
+        s3.delete_objects(
+          bucket: s3_bucket,
+          delete: {
+            objects: [
+              {
+                key: input_key
+              },
+              {
+                key: output_key
+              }
+            ],
+            quiet: true
+          }
+        )
+      end
     end
 
     def self.local_convert
