@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'json'
 require 'securerandom'
-require 'english'
+require 'English'
 
 require 'aws-sdk'
 
