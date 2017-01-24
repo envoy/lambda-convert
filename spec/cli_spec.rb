@@ -58,4 +58,18 @@ RSpec.describe LambdaConvert::CLI do
       expect(tempfile.path).to eq_image_size('100x100')
     end
   end
+
+  context 'simple lambda resize with fallback' do
+    let(:tempfile) { Tempfile.new('output') }
+    subject do
+      Open3.capture2(
+        { 'CONVERT_LAMBDA_FUNCTION' => 'does-not-exist' },
+        bin_path, envoy_logo, '-resize', '100x100!', tempfile.path
+      )
+    end
+    it 'resizes the image' do
+      expect(subject[1].success?).to eq(true)
+      expect(tempfile.path).to eq_image_size('100x100')
+    end
+  end
 end
