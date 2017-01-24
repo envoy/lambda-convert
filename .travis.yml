@@ -1,1 +1,9 @@
 language: ruby
+env:
+  global:
+    - CONVERT_LAMBDA_REGION=us-west-2
+    - CONVERT_LAMBDA_FUNCTION=image-convert-dev
+    - CONVERT_S3_REGION=us-west-2
+    - CONVERT_S3_BUCKET=envoy-development
+before_install: bundle install
+script: rspec

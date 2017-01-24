@@ -49,13 +49,7 @@ RSpec.describe LambdaConvert::CLI do
     let(:tempfile) { Tempfile.new('output') }
     subject do
       Open3.capture2(
-        {
-          'CONVERT_DISABLE_FALLBACK' => '1',
-          'CONVERT_LAMBDA_REGION' => 'us-west-2',
-          'CONVERT_LAMBDA_FUNCTION' => 'image-convert-dev',
-          'CONVERT_S3_REGION' => 'us-west-2',
-          'CONVERT_S3_BUCKET' => 'envoy-development'
-        },
+        { 'CONVERT_DISABLE_FALLBACK' => '1' },
         bin_path, envoy_logo, '-resize', '100x100!', tempfile.path
       )
     end
