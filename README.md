@@ -19,10 +19,10 @@ To eliminate the big image file uploading issue and the security risk, the idea 
 
 ## Environment variables
 
- - **CONVERT_S3_REGION** - AWS region for S3, default value will be reading from `AWS_REGION` if this environment variable is not set. (required)
- - **CONVERT_LAMBDA_REGION** - AWS region for Lambda, default value will be reading from `AWS_REGION` if this environment variable is not set. (required)
- - **CONVERT_ACCESS_KEY** - AWS access key, default value will be reading from `AWS_ACCESS_KEY_ID` if this environment variable is not set. (required)
- - **CONVERT_SECRET_ACCESS_KEY** - AWS secret key, default value will be reading from `AWS_SECRET_ACCESS_KEY` if this environment variable is not set. (required)
+ - **CONVERT_S3_REGION** - AWS region for S3, default value will be read from `AWS_REGION` if this environment variable is not set.
+ - **CONVERT_LAMBDA_REGION** - AWS region for Lambda, default value will be read from `AWS_REGION` if this environment variable is not set.
+ - **CONVERT_ACCESS_KEY** - AWS access key, default value will follow standard `aws-sdk` credential lookup sequence
+ - **CONVERT_SECRET_ACCESS_KEY** - AWS secret key, default value will follow standard `aws-sdk` credential lookup sequence
  - **CONVERT_S3_BUCKET** - AWS S3 bucket. (required)
  - **CONVERT_S3_KEY_PREFIX** - AWS S3 temporary file uploading prefix, default value is `_convert_tmp/`
  - **CONVERT_LAMBDA_FUNCTION** - Name of the AWS Lambda function to invoke, default value is `image-convert-prod`

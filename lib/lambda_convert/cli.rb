@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'json'
 require 'securerandom'
 require 'English'
@@ -12,10 +11,11 @@ module LambdaConvert
       attr_accessor :logger
 
       def aws_credentials
-        Aws::Credentials.new(
-          ENV['CONVERT_ACCESS_KEY'] || ENV['AWS_ACCESS_KEY_ID'],
-          ENV['CONVERT_SECRET_ACCESS_KEY'] || ENV['AWS_SECRET_ACCESS_KEY']
-        )
+        if ENV['CONVERT_ACCESS_KEY'] && ENV['CONVERT_SECRET_ACCESS_KEY']
+          Aws::Credentials.new(
+            ENV['CONVERT_ACCESS_KEY'], ENV['CONVERT_SECRET_ACCESS_KEY']
+          )
+        end
       end
 
       def lambda_region
