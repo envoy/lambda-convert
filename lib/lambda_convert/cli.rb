@@ -2,7 +2,8 @@ require 'json'
 require 'securerandom'
 require 'English'
 
-require 'aws-sdk'
+require 'aws-sdk-lambda'
+require 'aws-sdk-s3'
 
 module LambdaConvert
   # `convert` command line tool implementation
