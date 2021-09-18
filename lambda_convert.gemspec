@@ -13,5 +13,6 @@ Gem::Specification.new do |s|
   s.bindir      = 'bin'
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.license     = 'MIT'
-  s.add_runtime_dependency 'aws-sdk', '~> 2.6'
+  s.add_runtime_dependency 'aws-sdk-lambda', '~> 1.0'
+  s.add_runtime_dependency 'aws-sdk-s3', '~> 1.0'
 end
