@@ -4,6 +4,7 @@ PATH
     lambda_convert (1.0.0)
       aws-sdk-lambda (~> 1.0)
       aws-sdk-s3 (~> 1.0)
+      rexml (~> 3.2)
 
 GEM
   remote: https://rubygems.org/
@@ -30,22 +31,23 @@ GEM
     aws-sigv4 (1.11.0)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
-    diff-lcs (1.2.5)
+    diff-lcs (1.6.2)
     jmespath (1.6.2)
     logger (1.6.6)
-    rspec (3.3.0)
-      rspec-core (~> 3.3.0)
-      rspec-expectations (~> 3.3.0)
-      rspec-mocks (~> 3.3.0)
-    rspec-core (3.3.2)
-      rspec-support (~> 3.3.0)
-    rspec-expectations (3.3.1)
+    rexml (3.4.4)
+    rspec (3.13.2)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.6)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-mocks (3.3.2)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.8)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-support (3.3.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.7)
 
 PLATFORMS
   ruby
@@ -55,4 +57,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   1.17.3
+   2.6.9
