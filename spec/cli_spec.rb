@@ -45,7 +45,10 @@ RSpec.describe LambdaConvert::CLI do
     end
   end
 
-  context 'simple lambda resize' do
+  # Requires real AWS credentials for the Lambda function and S3 bucket in
+  # LambdaConvert::Config; set LAMBDA_CONVERT_INTEGRATION=1 to run it.
+  context 'simple lambda resize',
+          skip: (ENV['LAMBDA_CONVERT_INTEGRATION'] == '1' ? false : 'needs AWS credentials') do
     let(:tempfile) { Tempfile.new('output') }
     subject do
       Open3.capture2(

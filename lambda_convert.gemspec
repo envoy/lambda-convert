@@ -15,4 +15,6 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.add_runtime_dependency 'aws-sdk-lambda', '~> 1.0'
   s.add_runtime_dependency 'aws-sdk-s3', '~> 1.0'
+  # aws-sdk-s3 needs an XML parser; REXML is a bundled (not default) gem since Ruby 3.0
+  s.add_runtime_dependency 'rexml', '~> 3.2'
 end
